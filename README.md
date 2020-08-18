@@ -53,9 +53,10 @@ Este estilo de programación es usado en la función encargada de la autenticaci
 #### Kick Forward
 Igualmente, este estilo de programación es usado en general en todo el proyecto, mediante funciones anónimas y callbacks.
 
-### Módulo de comunidad
-#### Pipeline
+
+### Pipeline
 Funciones las cuales reciben datos sin compartir y devolver en otras
+ 
 
 ### Módulo de publicaciones
 #### Code Golf
