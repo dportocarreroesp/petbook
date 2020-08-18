@@ -54,29 +54,35 @@ Este estilo de programación es usado en la función encargada de la autenticaci
 Igualmente, este estilo de programación es usado en general en todo el proyecto, mediante funciones anónimas y callbacks.
 
 ### Módulo de comunidad
+#### Pipeline
+Funciones las cuales reciben datos sin compartir y devolver en otras
 
 ### Módulo de publicaciones
+#### Code Golf
+Este estilo se hace con pocas lineas de codigo, en esta parte las 3 partes content,comment postcard
+#### Things
+Separamos las partes de las publicaciones en capsulas content,comment,postcard
+#### Letter Box
+Al pasar las cápsulas como props a los componentes hijos
 
 ### Módulo de comentarios
+#### Code Golf
+Este estilo se hace con pocas lineas de codigo, en esta parte las 3 partes content,comment postcard
+Está dividido físicamente 
+#### Things 
+Mediante este estilo de programacion podemos comunicar mensajes de componentes de mayor jerarquia pero los datos que necesita los subcomponentes tienen que ser proveeido por el componente que lo contiene
+#### Letter Box
+Al pasar las cápsulas como props a los componentes hijos
 
 ## Principios S.O.L.I.D aplicados
 ### S — Single Responsibility
 Cada componente que utilizamos maneja una serie de responsabilidades que no implica a otro
 
-### O — Open-Closed
-```javascript
-console.table(undefined)
-```
-### L — Liskov Substitution
-```javascript
-console.table(undefined) cube, rec
-```
+### O - Open Closed
+Cada componente está libre a recibir más funcionalidades, como agregar más botones al header
 
 ### I — Interface Segregation
-Cuando una clase tiene que cumplir muchos propositos
-
-### D — Dependency Inversion
-
+Cuando una clase tiene que cumplir muchos propósitos, esta se divide para poder cumplir las distintas tareas
 
 ## Conceptos DDD aplicados
 ### Lenguaje Ubicuo: Ubiquitous Language
