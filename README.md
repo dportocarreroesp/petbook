@@ -46,45 +46,204 @@ Para las prácticas de código legible se hizo uso de una extensión de Visual S
 ### Módulo de inicio de sesión y registro
 #### Codegolf
 Este estilo de programación es usado en general en todo el proyecto, gracias al SDK de Firebase.
+#### Librería para usar el API de Google
+```javascript
+export const auth = firebase.auth();
+export const firestore = firebase.firestore();
+export const firestorage = firebase.storage();
+
+const provider = new firebase.auth.GoogleAuthProvider();
+provider.setCustomParameters({ prompt: "select_account" });
+
+export const signInWithGoogle = () => auth.signInWithPopup(provider);
+```
 
 #### Bulletin Board
-Este estilo de programación es usado en la función encargada de la autenticación.
+Al momento de iniciar la aplicación se inicializa un listener que cuando detecta el evento de un cambio en el estado del token(login, logout), ejecuta una determinada acción.
+```javascript
+ this.unsubscribeFromAuth = auth.onAuthStateChanged(async (userAuth) => {
+      if (userAuth) {
+        const userRef = await createUserProfileDocument(userAuth);
+
+        userRef.onSnapshot((snapShot) => {
+          setCurrentUser({
+            id: snapShot.id,
+            ...snapShot.data(),
+          });
+        });
+      } else {
+        setCurrentUser(userAuth);
+      }
+    });
+```
 
 #### Kick Forward
 Igualmente, este estilo de programación es usado en general en todo el proyecto, mediante funciones anónimas y callbacks.
+```javascript
+export const getCommunitiesFromUser = async (userId) => {
+    const userRef = firestore.doc('users/'+userId);
+    const userSubscriptions = (await userRef.get()).data().subscriptions;
+
+    const communities = await getCommunities();
+
+    var communitiesFromUser = [];
+
+    communities.forEach(community => {
+        if(userSubscriptions.includes(community.id)) {
+            communitiesFromUser.push(community);
+        }
+    })
+
+    return communitiesFromUser;
+
+}
+```
 
 
 ### Pipeline
 Funciones las cuales reciben datos sin compartir y devolver en otras
- 
+ ```javascript
+ReactDOM.render(
+  <Provider store={store}>
+    <BrowserRouter>
+      <PersistGate persistor={persistor}>
+        <ThemeProvider theme={theme}>
+          <App />
+        </ThemeProvider>
+      </PersistGate>
+    </BrowserRouter>
+  </Provider>,
+  document.getElementById("root")
+);
+```
 
 ### Módulo de publicaciones
 #### Code Golf
-Este estilo se hace con pocas lineas de codigo, en esta parte las 3 partes content,comment postcard
+También se hace uso de este estilo al usar templates para componentes, en esta parte las 3 partes content, comment, postcard
+```javascript
+import { makeStyles } from "@material-ui/core/styles";
+import { Grid, Box, Hidden, CardMedia } from "@material-ui/core";
+import Content from "../../../components/user-post/Content";
+import Paper from "@material-ui/core/Paper";
+import Card from "@material-ui/core/Card";
+import CardActionArea from "@material-ui/core/CardActionArea";
+```
 #### Things
 Separamos las partes de las publicaciones en capsulas content,comment,postcard
+```javascript
+Grid item key={PostObj.id} xs={12}>
+  <PostCard {...PostObj} />
+  <br />
+</Grid>
+```
 #### Letter Box
 Al pasar las cápsulas como props a los componentes hijos
-
+```javascript
+<Grid item key={PostObj.id} xs={12}>
+  <PostCard {...PostObj} />
+  <br />
+</Grid>
+```
 ### Módulo de comentarios
 #### Code Golf
 Este estilo se hace con pocas lineas de codigo, en esta parte las 3 partes content,comment postcard
-Está dividido físicamente 
 #### Things 
 Mediante este estilo de programacion podemos comunicar mensajes de componentes de mayor jerarquia pero los datos que necesita los subcomponentes tienen que ser proveeido por el componente que lo contiene
 #### Letter Box
 Al pasar las cápsulas como props a los componentes hijos
-
+```javascript
+{comments.map((cmt) => (
+<Box key={cmt.id}>
+ <Grid container wrap="nowrap" spacing={2}>
+   <Grid item key={cmt.userId}>
+     <Avatar>{cmt.username[0]}</Avatar>
+   </Grid>
+   <Grid item key={cmt.id} xs>
+     <Typography color="textSecondary">
+       {cmt.username}{" "}
+       {Math.round((new Date() - cmt.date) / 1000).toString() +
+         " seconds ago."}
+     </Typography>
+     <Typography>{cmt.msg}</Typography>
+   </Grid>
+ </Grid>
+</Box>
+))}
+```
 ## Principios S.O.L.I.D aplicados
 ### S — Single Responsibility
 Cada componente que utilizamos maneja una serie de responsabilidades que no implica a otro
-
+```javascript
+const CustomButton = ({ children, buttonPurpose, ...otherProps }) => (
+  <button className={`${buttonPurpose} custom-button`} {...otherProps}>
+    {children}
+  </button>
+);
+```
 ### O - Open Closed
 Cada componente está libre a recibir más funcionalidades, como agregar más botones al header
-
+```javascript
+<div className={classes.grow}>
+      <React.Fragment>
+        <AppBar position="fixed" style={{ background: "#333333" }}>
+          <Toolbar>
+            <IconButton
+              edge="start"
+              className={classes.menuButton}
+              color="inherit"
+              aria-label="open drawer"
+            ></IconButton>
+            <MenuIcon />
+            <RLink to="/" style={{ textDecoration: "none" }}>
+              <Box color="text.primary">
+                <Typography variant="h5">
+                  <span role="img" aria-label="dog">
+                    
+                  </span>
+                  Petbook
+                </Typography>
+              </Box>
+            </RLink>
+               .
+               .
+               .
+         // Podemos seguir agregando más funcionalidades(botones que redirijan, etc)
+```
 ### I — Interface Segregation
 Cuando una clase tiene que cumplir muchos propósitos, esta se divide para poder cumplir las distintas tareas
+```javascript
+const FormInput = ({ handleChange, label, ...otherProps }) => (
+  <div className='group'>
+    <input className='form-input' onChange={handleChange} {...otherProps} />
+    {label ? (
+      <label
+        className={`${
+          otherProps.value.length ? 'shrink' : ''
+        } form-input-label`}
+      >
+        {label}
+      </label>
+    ) : null}
+  </div>
+);
 
+
+
+const FormSelect = ({ handleChange, label, options, ...otherProps }) => (
+  <div className='group'>
+    <div className='tittle'>{label}</div>
+    <select className='form-select' onChange={handleChange} {...otherProps} >
+      {
+        options.map(option => (
+          <option value={option.value} key={option.value}>
+            {option.label}
+          </option>
+        ))
+      }
+    </select>
+  </div>
+);
+```
 ## Conceptos DDD aplicados
 ### Lenguaje Ubicuo: Ubiquitous Language
 ```javascript
